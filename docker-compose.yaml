@@ -1,0 +1,38 @@
+version: "3"
+services:
+    fontend:
+        build:
+            context: ./front-end
+            dockerfile: Dockerfile
+        ports:
+            - "3003:3003"
+        networks: 
+            - netstark
+        links: 
+            - backend
+        environment: 
+            BACKEND_URL: http://backend:3002/todos
+    backend:
+        build:
+            context: ./back-end
+            dockerfile: Dockerfile
+        ports:
+            - "3002:3002"
+        networks: 
+            - netstark
+        links: 
+            - mongo
+        environment: 
+            MONGO_URI: mongodb://mongo:27017/todos
+    mongo:
+        image: mongo:4.2.3
+        ports:
+            - 27017:27017
+        volumes:
+            - mongodb_data_container:/data/db
+        networks: 
+            - netstark
+volumes:
+    mongodb_data_container:
+networks:
+    netstark:
